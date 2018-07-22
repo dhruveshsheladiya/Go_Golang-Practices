@@ -30,6 +30,11 @@ func GetPeople(w http.ResponseWriter, r *http.Request) {
 func GetPerson(w http.ResponseWriter, r *http.Request) {
     params := mux.Vars(r)
     for _, item := range people {
+		if item.Firstname== params["Firstname"]{
+			json.NewEncoder(w).Encode(item)
+			return
+		}
+		
         if item.ID == params["id"] {
             json.NewEncoder(w).Encode(item)
             return
@@ -66,7 +71,8 @@ func main() {
     people = append(people, Person{ID: "1", Firstname: "Dhruvesh", Lastname: "Sheladiya", Address: &Address{City: "fairfax", State: "VA"}})
     people = append(people, Person{ID: "2", Firstname: "Rohan", Lastname: "V.", Address: &Address{City: "Toronto", State: "Toronto"}})
     router.HandleFunc("/people", GetPeople).Methods("GET")
-    router.HandleFunc("/people/{id}", GetPerson).Methods("GET")
+	router.HandleFunc("/people/{id}", GetPerson).Methods("GET")
+	router.HandleFunc("/people/{Firstname}", GetPerson).Methods("GET")
     router.HandleFunc("/people/{id}", CreatePerson).Methods("POST")
     router.HandleFunc("/people/{id}", DeletePerson).Methods("DELETE")
     log.Fatal(http.ListenAndServe(":8000", router))
