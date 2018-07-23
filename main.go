@@ -10,14 +10,21 @@ import (
 
 // The person Type (more like an object)
 type Person struct {
-	ID        string   `json:"id,omitempty"`
-	Firstname string   `json:"firstname,omitempty"`
-	Lastname  string   `json:"lastname,omitempty"`
-	Address   *Address `json:"address,omitempty"`
+	ID          string       `json:"id,omitempty"`
+	Firstname   string       `json:"firstname,omitempty"`
+	Lastname    string       `json:"lastname,omitempty"`
+	Address     *Address     `json:"address,omitempty"`
+	WorkDetails *WorkDetails `json:"workdetails,omitempty"`
 }
 type Address struct {
 	City  string `json:"city,omitempty"`
 	State string `json:"state,omitempty"`
+}
+
+type WorkDetails struct {
+	EmpID        string `json:"employeeid,omitempty"`
+	EmployerName string `json:"employername,omitempty"`
+	EmpDept      string `json:"empdept,omitempty"`
 }
 
 var people []Person
@@ -35,10 +42,7 @@ func GetPerson(w http.ResponseWriter, r *http.Request) {
 			json.NewEncoder(w).Encode(item)
 			return
 		}
-        if item.Firstname == params["Lastname"] {
-			json.NewEncoder(w).Encode(item)
-			return
-		}
+
 		if item.ID == params["id"] {
 			json.NewEncoder(w).Encode(item)
 			return
@@ -76,8 +80,8 @@ func main() {
 	people = append(people, Person{ID: "2", Firstname: "Rohan", Lastname: "V.", Address: &Address{City: "Toronto", State: "Toronto"}})
 	router.HandleFunc("/people", GetPeople).Methods("GET")
 	router.HandleFunc("/people/{id}", GetPerson).Methods("GET")
-    router.HandleFunc("/people/{Firstname}", GetPerson).Methods("GET")
-    router.HandleFunc("/people/{Lastname}", GetPerson).Methods("GET")
+	router.HandleFunc("/people/{Firstname}", GetPerson).Methods("GET")
+	router.HandleFunc("/people/{Lastname}", GetPerson).Methods("GET")
 	router.HandleFunc("/people/{id}", CreatePerson).Methods("POST")
 	router.HandleFunc("/people/{id}", DeletePerson).Methods("DELETE")
 	log.Fatal(http.ListenAndServe(":8000", router))
